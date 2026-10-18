@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script>
+  (function() {
+    var GA_ID = 'G-9B93Y07C1V';
+    var isLocalDev = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    if (isLocalDev) return;
+    try { if (/[?&]no_ga=0/.test(location.search)) localStorage.removeItem('no_ga'); if (/[?&]no_ga=1/.test(location.search)) localStorage.setItem('no_ga', '1'); if (localStorage.getItem('no_ga') === '1') return; } catch (e) {}
+    var gaQ = new URLSearchParams(location.search); if (gaQ.get('obs') === '1' || gaQ.get('no_ga') === '1') return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="booth.pm"]') : null;
+      if (!a) return;
+      gtag('event', 'booth_click', { link_url: a.href, link_id: a.id || '', link_text: (a.textContent || '').trim().slice(0, 40) });
+    });
+  })();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="表紙テンプレートを無料で作成。本のサイズと背幅を入れると、表1・背・表4と塗り足し・安全線の入った表紙のガイド画像(PNG)を作ります。同人誌の右綴じ・左綴じ、KDPペーパーバック(ページ数から背幅を計算)に対応。キャンバスのピクセル数もわかります。登録不要、ブラウザだけで使えます。">
+<link rel="canonical" href="https://uuhai0625.github.io/hyoushi-template/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="表紙テンプレートメーカー|背幅つきで表1・背・表4・塗り足しのガイドを作成(同人誌・KDP/無料)">
+<meta property="og:description" content="表紙テンプレートを無料で作成。本のサイズと背幅を入れると、表1・背・表4と塗り足し・安全線の入った表紙のガイド画像(PNG)を作ります。同人誌の右綴じ・左綴じ、KDPペーパーバック(ページ数から背幅を計算)に対応。キャンバスのピクセル数もわかります。登録不要、ブラウザだけで使えます。">
+<meta property="og:url" content="https://uuhai0625.github.io/hyoushi-template/">
+<meta property="og:image" content="https://uuhai0625.github.io/hyoushi-template/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>表紙テンプレートメーカー|背幅つきで表1・背・表4・塗り足しのガイドを作成(同人誌・KDP/無料)</title>
+<style>
+  :root {
+    --bg: #f3f4f7;
+    --panel: #ffffff;
+    --border: #dcdfe6;
+    --field-border: #565c6b;
+    --text: #23262e;
+    --muted: #535a68;
+    --accent: #2f5bb7;
+    --accent-dark: #213f82;
+    --soft: #eaf0fb;
+    --ng: #b3261e;
+    --locked: #c8cdd8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  header { background: var(--accent-dark); color: #fff; padding: 24px 20px 18px; text-align: center; }
+  header h1 { margin: 0 0 6px; font-size: 1.35rem; }
+  header p { margin: 0; font-size: .9rem; }
+  main { max-width: 1120px; margin: 0 auto; padding: 22px 16px 50px; }
+  main > * { min-width: 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); grid-template-areas: "book pv" "spine pv" "out pv" "fin pv"; column-gap: 18px; align-items: start; }
+  .layout > * { min-width: 0; }
+  #book-card { grid-area: book; } #spine-card { grid-area: spine; } #out-card { grid-area: out; } #finish-card { grid-area: fin; }
+  #pv-card { grid-area: pv; position: sticky; top: 12px; }
+  section.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+  section.card h2 { margin: 0 0 6px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .desc { color: var(--muted); font-size: .86rem; margin: 0 0 12px; }
+  .fine { color: var(--muted); font-size: .84rem; margin: 8px 0 0; }
+  .badge { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: #fff1cc; color: #7a5600; font-weight: bold; }
+  .hidden { display: none !important; }
+  label.field, div.field { display: block; margin-bottom: 12px; }
+  .lbl { font-size: .88rem; font-weight: bold; display: block; }
+  .hint { font-size: .8rem; color: var(--muted); font-weight: normal; display: block; margin-top: 2px; }
+  select, input[type=text], input[type=number] { margin-top: 5px; min-height: 44px; border: 1px solid var(--field-border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; color: var(--text); width: 100%; padding: 8px 10px; }
+  input[type=color] { margin-top: 5px; width: 64px; height: 44px; border: 1px solid var(--field-border); border-radius: 8px; padding: 2px; background: #fff; }
+  input[type=file] { margin-top: 5px; font-size: .88rem; max-width: 100%; }
+  .row2 { display: flex; gap: 12px; }
+  .row2 > * { flex: 1; min-width: 0; }
+  .seg { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; }
+  .seg label { flex: 1; min-width: 120px; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 10px; border: 1px solid var(--field-border); border-radius: 8px; cursor: pointer; font-size: .9rem; }
+  .seg input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .seg label:has(input:checked) { border-color: var(--accent); background: var(--soft); font-weight: bold; }
+  .seg label:has(input:disabled) { opacity: .55; cursor: not-allowed; }
+  .file-btn { display: inline-flex; align-items: center; min-height: 44px; margin-top: 5px; }
+  .jump { display: none; margin-top: 10px; font-size: .9rem; }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { min-height: 44px; min-width: 44px; padding: 9px 16px; border-radius: 8px; font-size: .9rem; cursor: pointer; border: 1px solid var(--field-border); background: #fff; color: var(--text); font-family: inherit; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: bold; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .btn-row .btn { flex: 1; }
+  .chk { display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: .9rem; cursor: pointer; }
+  .chk input { width: 20px; height: 20px; accent-color: var(--accent); }
+  .status { font-size: .86rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .status.err { color: var(--ng); font-weight: bold; }
+  .note { font-size: .86rem; margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--soft); }
+  .note.warn { background: #fff4e0; }
+  .pv { border: 1px solid var(--border); border-radius: 8px; background: #e4e7ee; padding: 12px; display: flex; justify-content: center; }
+  .pv canvas { max-width: 100%; max-height: min(520px, 60vh); width: auto; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,.25); background: repeating-conic-gradient(#f2f2f2 0 25%, #fff 0 50%) 0 0 / 16px 16px; }
+  .spec { font-size: .9rem; margin: 10px 0 0; padding: 0; list-style: none; }
+  .spec li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--border); padding: 4px 0; }
+  .spec b { font-variant-numeric: tabular-nums; text-align: right; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .82rem; color: var(--muted); margin-top: 8px; }
+  .legend span::before { content: ""; display: inline-block; width: 18px; height: 0; border-top: 3px solid var(--c); vertical-align: middle; margin-right: 5px; }
+  .legend span.dash::before { border-top-style: dashed; }
+  .legend span.fill::before { height: 12px; border: 1px solid #e2483d; background: var(--c); }
+  .guide { font-size: .9rem; }
+  .guide h3 { font-size: .95rem; margin: 14px 0 4px; }
+  .guide ul { padding-left: 1.3em; margin: 6px 0; }
+  .guide li { margin: 4px 0; }
+  .locked-panel { border: 1px dashed var(--locked); border-radius: 10px; padding: 16px; text-align: center; color: var(--muted); background: #f9fafc; }
+  .locked-panel .lead { color: var(--text); font-weight: bold; }
+  .locked-panel .feat-list { text-align: left; max-width: 620px; margin: 10px auto; font-size: .88rem; padding-left: 1.2em; }
+  .buy-btn { display: inline-block; margin-top: 8px; background: var(--accent-dark); color: #fff; font-weight: bold; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-size: .9rem; }
+  footer { max-width: 1120px; margin: 0 auto; padding: 0 16px 40px; font-size: .84rem; color: var(--muted); }
+  footer p { margin: 10px 0; }
+  footer a { color: var(--muted); }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "book" "spine" "out" "pv"; }
+    #pv-card { position: static; }
+    .jump { display: inline-block; }
+  }
+  @media (max-width: 600px) {
+    .row2 { flex-direction: column; gap: 0; }
+    section.card { padding: 16px 12px; }
+  }
+</style>
+<!--ANSHIN_CSS_START--><style>:root{--anshin-w:1088px;--anshin-pad:16px}.anshin-strip,.anshin{box-sizing:border-box;width:min(var(--anshin-w),calc(100% - 2 * var(--anshin-pad)));margin-left:auto;margin-right:auto}.anshin-strip{list-style:none;margin-top:10px;margin-bottom:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:.8rem;line-height:1.5}.anshin-strip li{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:999px;background:rgba(20,120,90,.07)}.anshin-strip li.anshin-more{border:0;background:none;padding:3px 2px}.anshin-strip a,.anshin a{color:inherit}.anshin{margin-top:18px;margin-bottom:18px;padding:14px 18px;border:1px solid rgba(20,120,90,.45);border-radius:10px;background:rgba(20,120,90,.05);font-size:.86rem;line-height:1.7}.anshin h2{font-size:1rem;margin:0 0 6px}.anshin p{margin:0 0 6px}.anshin ul{margin:0;padding-left:1.2em}.anshin li{margin:3px 0}.anshin details{margin-top:6px}.anshin summary{cursor:pointer;font-weight:bold}.anshin .anshin-meta{margin:8px 0 0;font-size:.8rem;opacity:.85}@media print{.anshin,.anshin-strip{display:none!important}}</style><!--ANSHIN_CSS_END-->
+<!--UPSELL_CSS_START--><style>.upsell-top{box-sizing:border-box;width:min(var(--anshin-w,880px),calc(100% - 2 * var(--anshin-pad,16px)));margin:12px auto 0;font-size:.85rem;line-height:1.6}.upsell-top a{color:inherit}.upsell-assure{list-style:none;margin:12px 0 10px;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:.8rem;line-height:1.5}.upsell-assure li{padding:3px 10px;border:1px solid rgba(20,120,90,.45);border-radius:12px;background:rgba(20,120,90,.06)}.upsell-terms{margin:8px 0 0;font-size:.78rem;line-height:1.6;opacity:.85}.upsell-toast{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999;box-sizing:border-box;width:min(520px,calc(100% - 24px));padding:14px 56px 14px 16px;border-radius:12px;background:#fff;color:#222;border:1px solid #c9c2d6;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:.88rem;line-height:1.6}.upsell-toast p{margin:0 0 6px;font-weight:bold}.upsell-toast ul{margin:0 0 10px;padding-left:1.2em}.upsell-toast li{margin:2px 0}.upsell-toast .upsell-note{display:block;margin-top:6px;font-size:.75rem;color:#555}.upsell-toast .upsell-go{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:#c9283e;color:#fff;font-weight:bold;text-decoration:none}.upsell-toast .upsell-go:focus-visible,.upsell-toast .upsell-x:focus-visible{outline:3px solid #2560c4;outline-offset:2px}.upsell-toast .upsell-x{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#555;font-size:1.3rem;line-height:1;cursor:pointer}.upsell-inline{white-space:nowrap;color:inherit;text-decoration:underline;text-underline-offset:2px}@media print{.upsell-top,.upsell-assure,.upsell-terms,.upsell-toast,.upsell-inline{display:none!important}}</style><!--UPSELL_CSS_END-->
+</head>
+<body>
+
+<header>
+  <h1>表紙テンプレートメーカー</h1>
+  <p>本の大きさと背幅を入れると、表1・背・表4と塗り足し・安全線の入った表紙のテンプレート画像(ガイド)を作ります。同人誌(右綴じ・左綴じ)とKDPペーパーバックに対応。キャンバスのピクセル数もすぐわかります。登録不要・ブラウザだけで使えます</p>
+</header>
+<!--ANSHIN_STRIP_START-->
+<ul class="anshin-strip" aria-label="データの扱い">
+  <li><span aria-hidden="true">✓</span> 入力内容はこの端末の中だけで処理</li>
+  <li><span aria-hidden="true">✓</span> 登録・ログイン不要</li>
+  <li><span aria-hidden="true">✓</span> 仕組みを公開中</li>
+  <li class="anshin-more"><a href="#anshin">データの扱いをくわしく</a></li>
+</ul>
+<!--ANSHIN_STRIP_END-->
+<!--UPSELL_TOP_START--><p class="upsell-top no-print" id="upsellTop">このページは無料のまま使えます。機能を増やしたい方は <a href="#pro-section">買い切り版(¥100・1回払い)<span aria-hidden="true"> ↓</span></a></p><!--UPSELL_TOP_END-->
+
+<main>
+<div class="layout">
+
+  <section class="card" id="book-card">
+    <h2>① 本の種類と大きさ</h2>
+    <div class="field"><span class="lbl">入稿先</span>
+      <div class="seg" role="radiogroup" aria-label="入稿先">
+        <label><input type="radio" name="kind" value="doujin" checked> 同人誌(印刷所)</label>
+        <label><input type="radio" name="kind" value="kdp"> KDPペーパーバック</label>
+      </div>
+    </div>
+    <label class="field"><span class="lbl">仕上がりサイズ(1ページの大きさ)</span>
+      <select id="inSize"></select>
+    </label>
+    <div class="row2 hidden" id="customSize">
+      <label class="field"><span class="lbl">幅(mm)</span><input type="number" id="inW" min="50" max="400" step="0.1" value="148" inputmode="decimal"></label>
+      <label class="field"><span class="lbl">高さ(mm)</span><input type="number" id="inH" min="50" max="400" step="0.1" value="210" inputmode="decimal"></label>
+    </div>
+    <div class="field"><span class="lbl">綴じ方向</span>
+      <div class="seg" role="radiogroup" aria-label="綴じ方向">
+        <label><input type="radio" name="bind" value="right" checked> 右綴じ(縦書き・漫画)</label>
+        <label><input type="radio" name="bind" value="left"> 左綴じ(横書き)</label>
+      </div>
+      <span class="hint">右綴じは表1(おもて表紙)が左、左綴じは表1が右に来ます(表紙を外側から広げた形)</span>
+    </div>
+  </section>
+
+  <section class="card" id="spine-card">
+    <h2>② 背幅</h2>
+    <div id="doujinSpine">
+      <label class="field"><span class="lbl">背幅(mm)</span><input type="number" id="inSpine" min="0" max="80" step="0.01" value="5" inputmode="decimal" aria-describedby="spineNote"><span class="hint">背幅は印刷所ごとに計算方法が違います。入稿先の計算ツールか、<a href="https://uuhai0625.github.io/sehaba-calc/" target="_blank" rel="noopener">同人誌 背幅計算ツール(印刷所8社)</a>で出した値を入れてください</span></label>
+      <div class="row2">
+        <label class="field"><span class="lbl">塗り足し</span>
+          <select id="inBleed"><option value="3" selected>3mm(多くの印刷所)</option><option value="5">5mm</option></select>
+          <span class="hint">仕上がり線の外へ絵や色を伸ばす幅</span>
+        </label>
+        <label class="field"><span class="lbl">安全線(仕上がり線の内側)</span>
+          <select id="inSafe"><option value="5" selected>5mm</option><option value="3">3mm</option><option value="10">10mm</option></select>
+          <span class="hint">文字を入れてよい範囲の目安</span>
+        </label>
+      </div>
+    </div>
+    <div id="kdpSpine" class="hidden">
+      <div class="row2">
+        <label class="field"><span class="lbl">本文のページ数(偶数)</span><input type="number" id="inPages" min="24" max="828" step="2" value="100" inputmode="numeric" aria-describedby="spineNote"></label>
+        <label class="field"><span class="lbl">本文の紙</span>
+          <select id="inKdpPaper">
+            <option value="0.002252" data-max="828" selected>白・モノクロ</option>
+            <option value="0.0025" data-max="776">クリーム・モノクロ</option>
+            <option value="0.002347" data-max="828">カラー(プレミアム)</option>
+            <option value="0.002252" data-min="72" data-max="600">カラー(スタンダード)</option>
+          </select>
+        </label>
+      </div>
+      <p class="fine">KDPの式(ページ数×紙1枚あたりの厚さ)で背幅を出します。塗り足しは3.18mm(0.125インチ)、文字は仕上がり線から3.18mm内側に。KDPへの表紙の入稿はPDF1つなので、仕上げた表紙はPDFに書き出してください。KDPの仕様は変わることがあります。公開前に、KDPの表紙の計算ツール・テンプレートで同じ数字になるか確かめてください。</p>
+    </div>
+    <p class="note" id="spineNote" aria-live="polite"></p>
+    <a class="jump" href="#pv-card">見本と保存へ ↓</a>
+  </section>
+
+  <section class="card" id="out-card">
+    <h2>③ 書き出し</h2>
+    <label class="field"><span class="lbl">解像度</span>
+      <select id="inDpi">
+        <option value="350" selected>350dpi(カラー表紙のふつう)</option>
+        <option value="300">300dpi(KDPの推奨)</option>
+        <option value="600">600dpi(モノクロ2階調など)</option>
+        <option value="250">250dpi(スマホ用の下書き・印刷には低め)</option>
+      </select>
+    </label>
+    <label class="chk"><input type="checkbox" id="inClear"> 背景を透明にする(イラストの上に重ねるガイド用)</label>
+    <label class="chk"><input type="checkbox" id="inNoLabel"> 「表1」などの文字を入れない(線だけ)</label>
+    
+  </section>
+
+  <section class="card" id="pv-card">
+    <h2>④ テンプレートを確かめて保存</h2>
+    <div class="pv"><canvas id="cv" width="800" height="400" role="img" aria-label="表紙テンプレートの見本"></canvas></div>
+    <div class="legend" aria-hidden="true">
+      <span style="--c:#e2483d">仕上がり線</span><span class="dash" style="--c:#2f6fd6">安全線(文字はこの内側)</span><span style="--c:#7b8190">背の線</span><span class="dash" style="--c:#7b8190">袖の折り目・帯</span><span class="fill" style="--c:rgba(226,72,61,.16)">塗り足し(切り落とす)</span>
+    </div>
+    <ul class="spec" id="spec"></ul>
+    <div class="status" id="outSt" role="status"></div>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="saveBtn">テンプレート画像を保存(PNG)</button>
+      <button type="button" class="btn" id="copyBtn">サイズをテキストでコピー</button>
+    </div>
+    <p class="fine">保存した画像をCLIP STUDIO PAINTやPhotoshopなどで開き、いちばん上のレイヤーにして、下に表紙の絵を描きます(「背景を透明にする」で保存するか、乗算・不透明度50%くらいにすると下の絵が見えます)。画像には解像度(dpi)の情報も入っています。入稿するときはガイドのレイヤーを消してください。</p>
+    <p class="fine">寸法は一般的な規格や公開されている仕様をもとにした目安です。印刷所やKDPの仕様は変わることがあり、入稿先によっても違います。入稿前に、必ず入稿先の公式テンプレート・案内で確かめてください。</p>
+    <p class="fine" id="creditNote"></p>
+  </section>
+
+</div>
+
+  
+
+  <section class="card" id="pro-section">
+    <h2>カバー(袖つき)・帯・絵を入れた仕上げ <span class="badge">買い切り版 ¥100(税込)</span></h2>
+    <div class="locked-panel">
+      <p class="lead">表紙の型紙から仕上げまで、パソコンで。</p>
+      <p>このページの機能は無料でそのまま使えます。買い切り版(ダウンロード購入)では、次の機能が増えます:</p>
+      <ul class="feat-list">
+        <li><strong>カバー(袖つき)のテンプレート</strong>(同人誌): 袖の幅を入れると、袖・表4・背・表1・袖の型紙に。カバーの背の広げ幅と、帯の位置も入れられます</li>
+        <li><strong>表紙を仕上げる</strong>: 表1・表4の絵を入れ、背の色と縦書きの背文字をつけて、塗り足しまで入った表紙の画像(RGBのPNG)を書き出し。CMYK指定の印刷所では、入稿前に変換が必要です</li>
+        <li><strong>ツール名が入りません</strong>(無料版はテンプレート画像の下の塗り足しに小さく入ります)</li>
+        <li><strong>パソコンで使うHTMLファイルです</strong>(スマホでの動作は保証していません)。ダブルクリックで開くだけ、ネットにつながっていなくても使えます</li>
+      </ul>
+<!--UPSELL_ASSURE_START--><ul class="upsell-assure" aria-label="買い切り版について"><li>¥100(税込)の1回払い・月額なし</li><li>パソコン向けのHTMLファイル(スマホでは開けない機種あり)</li><li>ネットにつながっていなくても動く</li><li>BOOTHで購入(クレジットカード・楽天ペイは手数料なし、コンビニ・銀行払いは別途手数料)</li></ul><!--UPSELL_ASSURE_END-->
+      <a class="buy-btn" href="https://uuhai0625.booth.pm/items/9006126" id="buyLink" target="_blank" rel="noopener">パソコン用の買い切り版を見る(BOOTH・新しいタブ)</a><!--UPSELL_TERMS_START--><p class="upsell-terms">販売者の情報・返品などの販売条件は、BOOTHの商品ページでご確認ください。BOOTHでの購入にはpixivのアカウントが必要です。</p><!--UPSELL_TERMS_END-->
+    </div>
+  </section>
+
+  <section class="card guide" id="guide">
+    <h2>表紙テンプレートの見方</h2>
+    <h3>表1・表2・表3・表4とは</h3>
+    <ul>
+      <li><strong>表1</strong>: おもて表紙。<strong>表4</strong>: うら表紙。<strong>表2・表3</strong>: 表紙の内側(表1の裏・表4の裏)。</li>
+      <li>表紙のデータは、表4・背・表1を1枚につなげて作ります。右綴じ(縦書き・漫画)は「表1・背・表4」、左綴じ(横書き)は「表4・背・表1」の順に左から並びます。</li>
+    </ul>
+    <h3>塗り足しと安全線</h3>
+    <ul>
+      <li><strong>塗り足し</strong>: 仕上がり線の外側。断裁のずれで白いふちが出ないよう、背景の色や絵をここまで伸ばします(多くの印刷所は3mm)。</li>
+      <li><strong>安全線</strong>: 仕上がり線の内側。タイトルや文字はこの内側に入れます。断裁がずれても切れないようにするためです。</li>
+      <li>背幅が細い本(数mm)は、背に文字を入れると表1や表4にはみ出して見えることがあります。印刷所の案内に合わせてください。</li>
+    </ul>
+    <h3>よくある質問</h3>
+    <ul>
+      <li><strong>ピクセル数はどう決まる?</strong> 全体の大きさ(mm)÷25.4×解像度(dpi)です。350dpiでB5の本(背5mm・塗り足し3mm)なら、約5,170×3,620ピクセルになります。</li>
+      <li><strong>スマホで保存できない?</strong> iPhone・iPadのブラウザは、約1,670万ピクセルより大きな画像を作れません。B5・350dpiの表紙はこれを超えるので、パソコンで作ってください。</li>
+      <li><strong>印刷所のテンプレートと違う?</strong> 背幅や塗り足しの決まりは印刷所ごとに違います。入稿先が公式のテンプレートを出している場合は、そちらに合わせてください。</li>
+      <li><strong>入れた内容や画像は送られる?</strong> 送られません。すべてこのブラウザの中で処理します。</li>
+    </ul>
+  </section>
+
+</main>
+
+<!--ANSHIN_START-->
+<section class="anshin" id="anshin" aria-labelledby="anshin-title">
+  <h2 id="anshin-title">データの扱いについて</h2>
+  <p>このページには、入力した内容を受け取る仕組みがありません。入力した文字や数字は、あなたのスマホやパソコンの中だけで処理されます。</p>
+  <ul>
+    <li>会員登録・ログイン・メールアドレスの入力はありません。</li>
+    <li>自分で確かめたい方へ: ページを開いたあと機内モードにしても、そのまま使えます。</li>
+  </ul>
+  <details>
+    <summary>もっとくわしく(保存・アクセス解析・公開について)</summary>
+    <ul>
+      <li>保存されるデータは、この端末のこのブラウザの中にだけ残ります(localStorage・sessionStorage)。共用のパソコンでは使い終わったら消してください。</li>
+      <li>アクセス解析(Google Analytics)のため、見たページのURL・参照元・端末やブラウザの種類・おおよその地域(IPアドレスから推定)・Cookieの識別子・BOOTHへのリンクのクリック・どのボタンを押したか(回数や選んだ設定を含む)がGoogleに送られます。目的は利用状況の把握です。入力した文字や画像は送りません。(<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用</a>/<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">計測を止めるアドオン</a>。止めてもツールはそのまま使えます)</li>
+      <li>このツールの結果や作成物は目安です。入稿・契約・販売などの前には、印刷所や公式の情報でご確認ください。</li>
+      <li>処理の中身はすべて公開しています(詳しい方向け: <a href="https://github.com/uuhai0625/hyoushi-template" target="_blank" rel="noopener">GitHub</a>)。</li>
+    </ul>
+  </details>
+  <p class="anshin-meta">作っている人: ウーハイ(個人開発)/不具合・ご質問は<a href="https://x.com/uuhai0625" target="_blank" rel="noopener">X(@uuhai0625)</a>へ/<a href="https://uuhai0625.github.io/" target="_blank" rel="noopener">ほかのツール</a>/この説明の更新日: 2026-10-13</p>
+</section>
+<!--ANSHIN_END-->
+
+<footer>
+  <p id="privacyNote">入力した内容や画像はどこにも送信されません(すべてこのブラウザの中で処理します)。</p>
+  <p>Amazon、Kindle、Kindle Direct Publishing(KDP)は、Amazon.com, Inc.またはその関連会社の商標です。CLIP STUDIO PAINTは株式会社セルシスの、PhotoshopはAdobeの商標または登録商標です。このツールは非公式で、各社とは関係ありません。</p>
+  <p><a href="https://uuhai0625.booth.pm/" target="_blank" rel="noopener">他のツールも見る(BOOTHショップ)</a></p>
+  <p>不具合・ご要望は X <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> まで。</p>
+  <p class="related-tools no-print">関連する無料ツール: <a href="https://uuhai0625.github.io/sehaba-calc/" target="_blank" rel="noopener">同人誌 背幅計算</a> ・ <a href="https://uuhai0625.github.io/daiwari-maker/" target="_blank" rel="noopener">台割作成ツール</a> ・ <a href="https://uuhai0625.github.io/genko-page-calc/" target="_blank" rel="noopener">原稿用紙換算・小説ページ数計算</a> ・ <a href="https://uuhai0625.github.io/#free-tools">ツール一覧</a></p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var EDITION = "free"; // "full" で買い切り完全版
+
+  function track(name, params) {
+    if (!window.dataLayer) return;
+    (function () { window.dataLayer.push(arguments); })("event", name, params || {});
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function setSt(id, msg, err) { var e = $(id); if (!e) return; e.textContent = msg; e.classList.toggle("err", !!err); }
+  function num(id, d) { var e = $(id); if (!e) return d; var v = parseFloat(e.value); return isFinite(v) ? v : d; }
+  function checked(id) { var e = $(id); return !!(e && e.checked); }
+  function radio(name) { var e = document.querySelector('input[name="' + name + '"]:checked'); return e ? e.value : ""; }
+
+  var CREDIT = true;
+  
+  var IN = 25.4;
+  var SIZES = {
+    doujin: [["A4", 210, 297], ["B5", 182, 257], ["A5", 148, 210], ["B6", 128, 182], ["文庫", 105, 148], ["新書(103×182)", 103, 182], ["サイズを入力", 0, 0]],
+    kdp: [["5×8インチ(127×203.2mm)", 5 * IN, 8 * IN], ["5.5×8.5インチ(139.7×215.9mm)", 5.5 * IN, 8.5 * IN], ["6×9インチ(152.4×228.6mm)", 6 * IN, 9 * IN], ["A5(5.83×8.27インチ)", 5.83 * IN, 8.27 * IN], ["B6(5.04×7.17インチ)", 5.04 * IN, 7.17 * IN], ["新書(4.06×7.17インチ)", 4.06 * IN, 7.17 * IN], ["サイズを入力", 0, 0]]
+  };
+  var BLEED_KDP = 0.125 * IN, SAFE_KDP = 0.125 * IN, SPINE_MARGIN_KDP = 0.0625 * IN;
+  var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var PX_CAP = IOS ? 16.7e6 : 120e6;
+
+  function fillSizes() {
+    var kind = radio("kind"), sel = $("inSize"), keep = kind === "doujin" ? 1 : 2;
+    sel.textContent = "";
+    SIZES[kind].forEach(function (s, i) { var o = document.createElement("option"); o.value = i; o.textContent = s[0]; sel.appendChild(o); });
+    sel.value = keep;
+  }
+
+  function r2(v) { return Math.round(v * 100) / 100; }
+  function clamp(v, lo, hi, note, msg) { var c = Math.min(hi, Math.max(lo, v)); if (c !== v) note.push(msg + "の範囲で計算しています"); return c; }
+  function conf() {
+    var kind = radio("kind"), s = SIZES[kind][+$("inSize").value] || SIZES[kind][0];
+    var w = s[1], h = s[2], fix = [];
+    if (!w) {
+      var lim = kind === "kdp" ? [4 * IN, 8.5 * IN, 6 * IN, 11.69 * IN] : [50, 400, 50, 400];
+      w = clamp(num("inW", 148), lim[0], lim[1], fix, "幅は" + r2(lim[0]) + "〜" + r2(lim[1]) + "mm");
+      h = clamp(num("inH", 210), lim[2], lim[3], fix, "高さは" + r2(lim[2]) + "〜" + r2(lim[3]) + "mm");
+    }
+    var C = { kind: kind, w: w, h: h, sizeName: s[1] ? s[0].replace(/\(.*$/, "") : (r2(w) + "×" + r2(h) + "mm"), bind: radio("bind") || "right", dpi: +$("inDpi").value || 350 };
+    C.fix = fix;
+    if (kind === "kdp") {
+      var opt = $("inKdpPaper").selectedOptions[0], maxP = opt ? +opt.getAttribute("data-max") || 828 : 828, rawP = num("inPages", 100);
+      var minP = opt ? +opt.getAttribute("data-min") || 24 : 24;
+      C.pages = clamp(Math.ceil(rawP / 2) * 2, minP, maxP, fix, "ページ数は" + minP + "〜" + maxP + "(この紙の範囲)");
+      if (Math.round(rawP) % 2) fix.push("ページ数は偶数にして計算しています");
+      C.spine = C.pages * parseFloat($("inKdpPaper").value) * IN;
+      C.bleed = BLEED_KDP; C.safe = SAFE_KDP; C.spineMargin = SPINE_MARGIN_KDP;
+      C.spineText = C.pages > 79;
+    } else {
+      C.spine = clamp(num("inSpine", 5), 0, 80, fix, "背幅は0〜80mm");
+      C.bleed = +$("inBleed").value || 3; C.safe = +$("inSafe").value || 5; C.spineMargin = 0;
+      C.spineText = C.spine >= 3;
+    }
+    C.jacket = checked("inJacket") && kind === "doujin";
+    C.flap = C.jacket ? r2(clamp(num("inFlap", 70), 20, 150, fix, "袖は20〜150mm")) : 0;
+    if (C.jacket) { C.bodySpine = C.spine; C.spine += clamp(num("inSpineAdd", 0), 0, 10, fix, "背の広げ幅は0〜10mm"); C.obi = clamp(num("inObi", 0), 0, C.h - 10, fix, "帯の高さは0〜" + r2(C.h - 10) + "mm"); } else C.obi = 0;
+    C.clear = checked("inClear"); C.noLabel = checked("inNoLabel");
+    return C;
+  }
+
+  // 左から並ぶ面(mm、仕上がり線の左端が0)
+  function layout(C) {
+    var front = { type: "front", w: C.w }, back = { type: "back", w: C.w }, spine = { type: "spine", w: C.spine };
+    var parts = C.bind === "right" ? [front, spine, back] : [back, spine, front];
+    if (C.jacket) { var fl = C.bind === "right" ? ["flapF", "flapB"] : ["flapB", "flapF"]; parts.unshift({ type: fl[0], w: C.flap }); parts.push({ type: fl[1], w: C.flap }); }
+    var x = 0; parts.forEach(function (p) { p.x = x; x += p.w; });
+    return { parts: parts, trimW: x, W: x + C.bleed * 2, H: C.h + C.bleed * 2 };
+  }
+  var LABEL = { front: "表1(おもて表紙)", back: "表4(うら表紙)", spine: "背", flapF: "袖(表1側)", flapB: "袖(表4側)" };
+
+  // ===== 縦書き(背文字) =====
+  var ROT = "ー―‐－～〜…‥—＝（）「」『』【】〔〕［］〈〉《》-~()=";
+  function vtext(ctx, text, cx, top, size, maxH, color) {
+    var chars = Array.from(text.replace(/[ 　]+/g, "　"));
+    if (!chars.length) return 0;
+    var step = size * 1.05, s = size;
+    if (step * chars.length > maxH) { s = maxH / chars.length; step = s; }
+    ctx.save(); ctx.fillStyle = color; ctx.font = "bold " + s + "px " + '"Yu Gothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    chars.forEach(function (ch, i) {
+      var y = top + step * i + step / 2;
+      if (ch === "　") return;
+      if ("、。，．".indexOf(ch) >= 0) { ctx.fillText(ch, cx + s * 0.25, y - s * 0.3); return; }
+      if (ROT.indexOf(ch) >= 0 || /[A-Za-z0-9]/.test(ch)) { ctx.save(); ctx.translate(cx, y); ctx.rotate(Math.PI / 2); ctx.fillText(ch, 0, 0); ctx.restore(); }
+      else ctx.fillText(ch, cx, y);
+    });
+    ctx.restore();
+    return step * chars.length;
+  }
+
+  // ===== 絵を入れた仕上げ =====
+  var imgs = { front: null, back: null };
+  function coverFit(ctx, im, x, y, w, h) {
+    if (!im.naturalWidth || !im.naturalHeight) return;
+    var r = Math.max(w / im.naturalWidth, h / im.naturalHeight), dw = im.naturalWidth * r, dh = im.naturalHeight * r;
+    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+    ctx.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh); ctx.restore();
+  }
+  function drawFinish(ctx, C, L, k) {
+    var b = C.bleed, bg = ($("inSpineColor") || {}).value || "#2f3a56";
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, L.W * k, L.H * k);
+    L.parts.forEach(function (p, i) {
+      var x = b + p.x, w = p.w;
+      if (i === 0) { x -= b; w += b; }
+      if (i === L.parts.length - 1) w += b;
+      var im = imgs[p.type];
+      if (im) coverFit(ctx, im, x * k, 0, w * k, L.H * k);
+      var szMm = Math.min(C.spine * 0.62, C.spineMargin ? (C.spine - 2 * C.spineMargin) * 0.9 : 9, 9);
+      if (p.type === "spine" && C.spineText && szMm >= 1.5) {
+        var ink = ($("inSpineInk") || {}).value || "#ffffff", cx = (b + p.x + p.w / 2) * k;
+        var sz = szMm * k, top = (b + C.safe + 4) * k, room = (C.h - C.safe * 2 - 8) * k;
+        var t = ($("inSpineTitle") || {}).value || "", a = ($("inSpineAuthor") || {}).value || "";
+        t = t.trim(); a = a.trim();
+        var aRoom = a ? room * 0.32 : 0;
+        if (t) vtext(ctx, t, cx, top, sz, room - aRoom - (a ? sz : 0), ink);
+        if (a) { var as = sz * 0.75, aLen = Math.min(Array.from(a).length * as * 1.05, aRoom); vtext(ctx, a, cx, top + room - aLen, as, aRoom, ink); }
+      }
+    });
+  }
+
+  // ===== ガイド =====
+  function drawGuide(ctx, C, L, k, opt) {
+    var b = C.bleed, lw = Math.max(1, 0.25 * k), W = L.W * k, H = L.H * k;
+    // 塗り足し(仕上がり線の外)
+    ctx.fillStyle = "rgba(226,72,61,.16)";
+    ctx.fillRect(0, 0, W, b * k); ctx.fillRect(0, H - b * k, W, b * k); ctx.fillRect(0, b * k, b * k, H - 2 * b * k); ctx.fillRect(W - b * k, b * k, b * k, H - 2 * b * k);
+    // 面ごとの安全線とラベル
+    L.parts.forEach(function (p) {
+      var x0 = (b + p.x) * k, w = p.w * k, y0 = b * k, h = C.h * k;
+      ctx.save(); ctx.strokeStyle = "#2f6fd6"; ctx.lineWidth = lw; ctx.setLineDash([lw * 6, lw * 4]);
+      if (p.type === "spine") {
+        var m = C.spineMargin * k;
+        if (C.spineMargin && w - 2 * m > lw) ctx.strokeRect(x0 + m, y0 + C.safe * k, w - 2 * m, h - 2 * C.safe * k);
+      } else {
+        var s = C.safe * k;
+        if (w > 2 * s) ctx.strokeRect(x0 + s, y0 + s, w - 2 * s, h - 2 * s);
+      }
+      ctx.restore();
+      if (opt.labels !== false && !C.noLabel && p.type !== "spine") {
+        var fs = Math.min(w * 0.075, h * 0.05);
+        ctx.save(); ctx.fillStyle = "rgba(60,66,82,.35)"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.font = "bold " + fs + "px sans-serif"; ctx.fillText(LABEL[p.type], x0 + w / 2, y0 + h / 2 - fs * 0.7);
+        ctx.font = (fs * 0.55) + "px sans-serif"; ctx.fillText(r2(p.w) + " × " + r2(C.h) + " mm", x0 + w / 2, y0 + h / 2 + fs * 0.5);
+        ctx.restore();
+      }
+      if (p.type === "back" && C.kind === "kdp" && w > 2.6 * IN * k) {
+        // KDPのバーコード位置(目安): 2×1.2インチ。左綴じは表4の右下、右綴じは左下(どちらも背の側)
+        var bw = 2 * IN * k, bh = 1.2 * IN * k, mg = 0.25 * IN * k, bx = C.bind === "right" ? x0 + mg : x0 + w - mg - bw;
+        ctx.save(); ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.strokeStyle = "#7b8190"; ctx.lineWidth = lw; ctx.setLineDash([lw * 3, lw * 3]);
+        ctx.fillRect(bx, y0 + h - mg - bh, bw, bh); ctx.strokeRect(bx, y0 + h - mg - bh, bw, bh);
+        ctx.setLineDash([]); ctx.fillStyle = "#535a68"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = (bh * 0.13) + "px sans-serif";
+        ctx.fillText("バーコードの位置(目安)", bx + bw / 2, y0 + h - mg - bh / 2 - bh * 0.1);
+        ctx.font = (bh * 0.09) + "px sans-serif"; ctx.fillText("KDPのテンプレートで確認", bx + bw / 2, y0 + h - mg - bh / 2 + bh * 0.12);
+        ctx.restore();
+      }
+    });
+    // 背・折り目の線
+    ctx.save(); ctx.strokeStyle = "#7b8190"; ctx.lineWidth = lw;
+    L.parts.forEach(function (p, i) {
+      if (!i) return;
+      var x = (b + p.x) * k;
+      var fold = p.type === "flapF" || p.type === "flapB" || L.parts[i - 1].type.indexOf("flap") === 0;
+      ctx.setLineDash(fold ? [lw * 6, lw * 4] : []);
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    });
+    ctx.restore();
+    // 帯の位置
+    if (C.obi) {
+      var oy = (b + C.h - C.obi) * k;
+      ctx.save(); ctx.strokeStyle = "#7b8190"; ctx.lineWidth = lw; ctx.setLineDash([lw * 6, lw * 4]); ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(W, oy); ctx.stroke();
+      if (!C.noLabel) { ctx.setLineDash([]); ctx.fillStyle = "rgba(60,66,82,.45)"; ctx.font = (Math.min(C.obi * 0.3, 6) * k) + "px sans-serif"; ctx.textBaseline = "top"; ctx.fillText("帯 " + r2(C.obi) + "mm", (b + 2) * k, oy + lw * 3); }
+      ctx.restore();
+    }
+    // 背のラベル
+    var sp = L.parts.filter(function (p) { return p.type === "spine"; })[0];
+    if (sp && opt.labels !== false && !C.noLabel) {
+      var sx = (b + sp.x + sp.w / 2) * k, fs2 = Math.max(Math.min(sp.w * 0.5, 6), 1.6) * k;
+      ctx.save(); ctx.fillStyle = "rgba(60,66,82,.6)"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = "bold " + fs2 + "px sans-serif";
+      ctx.translate(sx, (b + C.h / 2) * k); ctx.rotate(Math.PI / 2);
+      ctx.fillText("背 " + r2(C.spine) + "mm" + (C.jacket && C.spine !== C.bodySpine ? "(本体" + r2(C.bodySpine) + "mm)" : "") + (C.spineText ? "" : "(背文字は入れない)"), 0, 0);
+      ctx.restore();
+    }
+    // 仕上がり線
+    ctx.save(); ctx.strokeStyle = "#e2483d"; ctx.lineWidth = lw; ctx.strokeRect(b * k, b * k, L.trimW * k, C.h * k); ctx.restore();
+    if (CREDIT && opt.credit) { ctx.save(); ctx.fillStyle = "rgba(60,66,82,.45)"; ctx.font = (Math.min(1.8, b * 0.55) * k) + "px sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText("表紙テンプレートメーカー", (b + 2) * k, (L.H - b / 2) * k); ctx.restore(); }
+  }
+
+  function render(C, dpi, mode) {
+    var L = layout(C), k = dpi / IN, cv = document.createElement("canvas");
+    cv.width = Math.round(L.W * k); cv.height = Math.round(L.H * k);
+    var ctx = cv.getContext("2d");
+    if (!ctx) return null;
+    if (mode === "finish") drawFinish(ctx, C, L, k);
+    else if (mode === "both") { drawFinish(ctx, C, L, k); drawGuide(ctx, C, L, k, { labels: false }); }
+    else { if (!C.clear) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cv.width, cv.height); } drawGuide(ctx, C, L, k, { credit: true }); }
+    return cv;
+  }
+
+  // ===== 見本と数値 =====
+  var cv = $("cv"), timer = null;
+  function px(mm, dpi) { return Math.round(mm / IN * dpi); }
+  function specRows(C) {
+    var L = layout(C);
+    return [
+      ["全体(塗り足し込み)", r2(L.W) + " × " + r2(L.H) + " mm"],
+      ["ピクセル数(" + C.dpi + "dpi)", px(L.W, C.dpi).toLocaleString() + " × " + px(L.H, C.dpi).toLocaleString() + " px"],
+      ["仕上がり(表紙を広げた大きさ)", r2(L.trimW) + " × " + r2(C.h) + " mm"],
+      ["背幅(本体)", r2(C.jacket ? C.bodySpine : C.spine) + " mm" + (C.kind === "kdp" ? "(" + C.pages + "ページ)" : "")],
+      ["塗り足し・安全線", r2(C.bleed) + " mm ・ " + r2(C.safe) + " mm"]
+    ].concat(C.jacket ? [["袖", C.flap + " mm × 2"]] : []).concat(C.jacket && C.spine !== C.bodySpine ? [["カバーの背", r2(C.spine) + " mm(本体 " + r2(C.bodySpine) + " mm)"]] : []).concat(C.obi ? [["帯の高さ", r2(C.obi) + " mm"]] : []);
+  }
+  function refresh() {
+    var C = conf(), L = layout(C), dpi = Math.max(10, Math.min(120, 900 / (L.W / IN)));
+    var mode = checked("inFinishPv") ? "both" : "guide";
+    var r = render(C, dpi, mode);
+    if (!r) return;
+    cv.width = r.width; cv.height = r.height; var cx = cv.getContext("2d"); cx.clearRect(0, 0, cv.width, cv.height); cx.drawImage(r, 0, 0); r.width = r.height = 0;
+    cv.setAttribute("aria-label", "表紙テンプレートの見本(左から" + L.parts.map(function (p) { return LABEL[p.type].replace(/\(.*$/, ""); }).join("・") + "、" + C.sizeName + "・背" + r2(C.spine) + "mm・" + px(L.W, C.dpi).toLocaleString() + "×" + px(L.H, C.dpi).toLocaleString() + "px)");
+    var ul = $("spec"); ul.textContent = "";
+    specRows(C).forEach(function (row) { var li = document.createElement("li"), s = document.createElement("span"), b = document.createElement("b"); s.textContent = row[0]; b.textContent = row[1]; li.appendChild(s); li.appendChild(b); ul.appendChild(li); });
+    var note = $("spineNote"), warn = false, msg;
+    if (C.kind === "kdp") { msg = C.spineText ? "背幅 " + r2(C.spine) + "mm。背文字は、背の両側1.6mm(0.0625インチ)より内側に。" : "79ページ以下の本は、KDPでは背に文字を入れられません。"; warn = !C.spineText; }
+    else if (C.spine === 0) { msg = "背幅0mm(中綴じなど)。表4と表1が直接つながります。"; }
+    else { msg = C.spine < 3 ? "背幅が3mm未満です。背に文字を入れないほうがよい場合があるので、印刷所の案内を確認してください。" : "背幅 " + r2(C.spine) + "mm。"; warn = C.spine < 3; }
+    var big = px(L.W, C.dpi) * px(L.H, C.dpi) > PX_CAP;
+    if (big) { msg += " この大きさ(" + C.dpi + "dpi)は、この端末では保存できません" + (IOS ? "(iPhone・iPadの上限)。パソコンで作ってください。" : "。解像度を下げてください。"); warn = true; }
+    if (C.fix.length) { msg = C.fix.join("。") + "。" + msg; warn = true; }
+    if (note.textContent !== msg) note.textContent = msg;
+    note.classList.toggle("warn", warn);
+    ["inSpine", "inPages", "inW", "inH"].forEach(function (id) { if ($(id)) $(id).setAttribute("aria-invalid", C.fix.length ? "true" : "false"); });
+    $("creditNote").textContent = EDITION === "full" ? "" : "無料版は、テンプレート画像の下の塗り足し(切り落とす部分)に小さくツール名が入ります。";
+    setSt("outSt", "");
+  }
+  function later() { clearTimeout(timer); timer = setTimeout(refresh, 150); }
+  function onKind() {
+    var kdp = radio("kind") === "kdp";
+    $("doujinSpine").classList.toggle("hidden", kdp); $("kdpSpine").classList.toggle("hidden", !kdp);
+    fillSizes(); onSize();
+    $("inDpi").value = kdp ? "300" : "350";
+    var bd = document.querySelector('input[name="bind"][value="' + (kdp ? "left" : "right") + '"]'); if (bd) bd.checked = true;
+    if (kdp && $("inJacket")) $("inJacket").checked = false;
+    if ($("inJacket")) $("inJacket").disabled = kdp;
+    onJacket();
+  }
+  var flapTouched = false;
+  if ($("inFlap")) $("inFlap").addEventListener("input", function () { flapTouched = true; });
+  function onSize() {
+    var kind = radio("kind"), s = SIZES[kind][+$("inSize").value];
+    if ($("inFlap") && !flapTouched && s && s[1]) $("inFlap").value = s[1] >= 200 ? 140 : s[1] >= 180 ? 120 : s[1] >= 140 ? 100 : 70;
+    $("customSize").classList.toggle("hidden", !!(s && s[1]));
+    refresh();
+  }
+  function onJacket() { if ($("flapField")) $("flapField").classList.toggle("hidden", !checked("inJacket")); refresh(); }
+  document.querySelectorAll('input[name="kind"]').forEach(function (e) { e.addEventListener("change", onKind); });
+  document.querySelectorAll('input[name="bind"]').forEach(function (e) { e.addEventListener("change", refresh); });
+  $("inSize").addEventListener("change", onSize);
+  ["inW", "inH", "inSpine", "inPages", "inFlap", "inSpineAdd", "inObi", "inSpineTitle", "inSpineAuthor"].forEach(function (id) { if ($(id)) $(id).addEventListener("input", later); });
+  ["inBleed", "inSafe", "inKdpPaper", "inDpi", "inClear", "inNoLabel", "inFinishPv", "inSpineColor", "inSpineInk"].forEach(function (id) { if ($(id)) $(id).addEventListener("change", refresh); });
+  if ($("inSpineColor")) { $("inSpineColor").addEventListener("input", later); $("inSpineInk").addEventListener("input", later); }
+  if ($("inJacket")) $("inJacket").addEventListener("change", onJacket);
+
+  function loadImg(file) {
+    return new Promise(function (res, rej) {
+      var u = URL.createObjectURL(file), im = new Image();
+      im.onload = function () { res(im); };
+      im.onerror = function () { URL.revokeObjectURL(u); rej(new Error("img")); };
+      im.src = u;
+    });
+  }
+  var loadSeq = { front: 0, back: 0 };
+  ["front", "back"].forEach(function (key) {
+    var el = $(key === "front" ? "inFront" : "inBack");
+    if (!el) return;
+    el.addEventListener("change", function () {
+      var f = el.files && el.files[0], seq = ++loadSeq[key];
+      if (imgs[key]) { URL.revokeObjectURL(imgs[key].src); imgs[key] = null; }
+      if (!f) { refresh(); return; }
+      loadImg(f).then(function (im) {
+        if (seq !== loadSeq[key]) { URL.revokeObjectURL(im.src); return; }
+        if (!im.naturalWidth) { URL.revokeObjectURL(im.src); throw new Error("size"); }
+        imgs[key] = im; if ($("inFinishPv")) $("inFinishPv").checked = true; refresh(); setSt("finSt", "");
+      }).catch(function () { if (seq !== loadSeq[key]) return; el.value = ""; setSt("finSt", "画像を読み込めませんでした(JPEG・PNGなどを選んでください)。", true); refresh(); });
+    });
+  });
+
+  // ===== 保存 =====
+  function toBlob(c) { return new Promise(function (res) { c.toBlob(function (b) { res(b); }, "image/png"); }); }
+  function download(blob, name) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  var CRC_TABLE = (function () {
+    var t = new Uint32Array(256);
+    for (var n = 0; n < 256; n++) { var c = n; for (var j = 0; j < 8; j++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(bytes) { var c = 0xffffffff; for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+  // PNGに解像度(pHYs)を書き込む。お絵かきアプリで開いたとき実寸になるように
+  function withPhys(buf, dpi) {
+    var src = new Uint8Array(buf), ppm = Math.round(dpi / 0.0254), chunk = new Uint8Array(21), dv = new DataView(chunk.buffer);
+    dv.setUint32(0, 9); chunk.set([0x70, 0x48, 0x59, 0x73], 4); dv.setUint32(8, ppm); dv.setUint32(12, ppm); chunk[16] = 1;
+    dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+    var sdv = new DataView(src.buffer), pos = 8;
+    while (pos + 12 <= src.length) {
+      var len = sdv.getUint32(pos), type = String.fromCharCode(src[pos + 4], src[pos + 5], src[pos + 6], src[pos + 7]);
+      if (type === "pHYs") { var o1 = new Uint8Array(src.length - (len + 12) + 21); o1.set(src.subarray(0, pos), 0); o1.set(chunk, pos); o1.set(src.subarray(pos + len + 12), pos + 21); return o1; }
+      if (type === "IDAT" || type === "IEND") break;
+      pos += len + 12;
+    }
+    var at = 33, out = new Uint8Array(src.length + 21);
+    out.set(src.subarray(0, at), 0); out.set(chunk, at); out.set(src.subarray(at), at + 21);
+    return out;
+  }
+  var busy = false;
+  function save(mode, stId) {
+    if (busy) return; busy = true;
+    var C = conf(), L = layout(C), w = px(L.W, C.dpi), h = px(L.H, C.dpi);
+    if (w > 32000 || h > 32000 || w * h > PX_CAP) {
+      var fit = Math.floor(Math.sqrt(PX_CAP / (L.W / IN * L.H / IN)));
+      setSt(stId, "画像が大きすぎて、この端末では作れません(" + w.toLocaleString() + "×" + h.toLocaleString() + "px)。" + (IOS ? "iPhone・iPadでは" + fit + "dpiくらいまでです。パソコンで作ってください。" : fit + "dpi以下に下げてください。"), true); busy = false; return;
+    }
+    setSt(stId, "画像を作っています…");
+    setTimeout(function () {
+      var c = null;
+      Promise.resolve().then(function () { c = render(C, C.dpi, mode); return c ? toBlob(c) : null; }).then(function (b) {
+        if (c) c.width = c.height = 0;
+        if (!b) throw new Error("blob");
+        return b.arrayBuffer();
+      }).then(function (buf) {
+        var b = new Blob([withPhys(buf, C.dpi)], { type: "image/png" });
+        var name = (mode === "finish" ? "表紙_" : "表紙テンプレート_") + C.sizeName.replace(/[\/\\:*?"<>|()（）]/g, "") + "_背" + r2(C.spine) + "mm_" + C.dpi + "dpi.png";
+        download(b, name);
+        setSt(stId, "保存しました(" + w.toLocaleString() + "×" + h.toLocaleString() + "px・" + C.dpi + "dpi)。iPhoneでは「ファイル」に入ることがあります。");
+        track("hyoushi_save", { kind: mode, book: C.kind, jacket: C.jacket ? 1 : 0 });
+      }).catch(function () { if (c) c.width = c.height = 0; setSt(stId, "画像を作れませんでした。解像度を下げてもう一度お試しください。", true); }).then(function () { busy = false; });
+    }, 30);
+  }
+  $("saveBtn").addEventListener("click", function () { save("guide", "outSt"); });
+  if ($("finishBtn")) $("finishBtn").addEventListener("click", function () {
+    if (!imgs.front && !imgs.back) { setSt("finSt", "表1か表4の絵を選んでください。", true); return; }
+    save("finish", "finSt");
+  });
+  $("copyBtn").addEventListener("click", function () {
+    var C = conf(), text = "表紙テンプレート(" + C.sizeName + "・" + (C.bind === "right" ? "右綴じ" : "左綴じ") + ")\n" + specRows(C).map(function (r) { return r[0] + ": " + r[1]; }).join("\n");
+    var done = function () { setSt("outSt", "サイズをコピーしました。"); }, fail = function () { setSt("outSt", "コピーできませんでした。", true); };
+    var legacy = function () {
+      var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} ta.remove(); if (ok) done(); else fail();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, legacy); else legacy();
+  });
+
+  if (EDITION === "full") $("pro-section").classList.add("hidden");
+  if (EDITION !== "full") {
+    $("privacyNote").innerHTML = '入力した内容や画像はどこにも送信されません(すべてこのブラウザの中で処理します)。このページでは利用状況の把握のためにアクセス解析(Google Analytics)を使っています(入力した内容は含みません)。<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleによるデータの使用について</a>';
+  }
+  fillSizes(); onKind();
+})();
+</script>
+<!--UPSELL_JS_START-->
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  if (q.get("obs") === "1" || document.documentElement.classList.contains("obs")) return;
+  // 小さな案内(トースト)は、買い切り版がパソコン向けなので、マウス操作の広い画面でだけ出す
+  var pc = !!(window.matchMedia && matchMedia("(pointer:fine) and (min-width:720px)").matches);
+  var buy = document.getElementById("buyLink");
+  var pro = document.getElementById("pro-section");
+  if (!buy || !pro) return;
+  var FEATS = [];
+  var path = location.pathname.replace(/index\.html$/, "");
+  var KEY_CLOSED = "upsell_closed_until:" + path, KEY_SHOWN = "upsell_shown:" + path;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function sess(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function gtagEv(name, p) { if (!window.dataLayer) return; (function () { window.dataLayer.push(arguments); })("event", name, p || {}); }
+
+  var shown = false;
+  function blocked() {
+    if (shown || sess(KEY_SHOWN) === "1") return true;
+    var until = Number(store(KEY_CLOSED) || 0);
+    return until && Date.now() < until;
+  }
+  function feats() {
+    if (FEATS.length) return FEATS;
+    var out = [];
+    var lis = pro.querySelectorAll(".feat-list li");
+    for (var i = 0; i < lis.length && out.length < 3; i++) {
+      var all = lis[i].textContent.replace(/\s+/g, " ").trim();
+      if (/スマホ|HTMLファイル|パソコンで使う/.test(all)) continue;
+      var st = lis[i].querySelectorAll("strong");
+      var t = st.length === 1 ? st[0].textContent : all.split(/[::。]/)[0];
+      t = t.replace(/[((][^()()]*[))]/g, "").replace(/\s+/g, " ").trim();
+      if (t.length > 40) t = t.slice(0, 39) + "…";
+      if (t) out.push(t);
+    }
+    return out;
+  }
+  // 「〜してください」「できません」など、失敗の表示が出ていたら案内しない
+  function failed() {
+    var els = document.querySelectorAll('[role="status"], [role="alert"], [aria-live]');
+    for (var i = 0; i < els.length; i++) {
+      if (pro.contains(els[i]) || !els[i].offsetParent) continue;
+      if (/ください|できません|できませんでした|失敗|ありません|エラー/.test(els[i].textContent)) return true;
+    }
+    return false;
+  }
+  function proVisible() {
+    var r = pro.getBoundingClientRect();
+    return r.top < innerHeight && r.bottom > 0;
+  }
+  function show(trigger) {
+    if (!pc || blocked() || (trigger === "action" && failed()) || proVisible()) return;
+    var list = feats();
+    if (!list.length) return;
+    shown = true;
+    sess(KEY_SHOWN, "1");
+    var box = document.createElement("aside");
+    box.className = "upsell-toast";
+    box.setAttribute("aria-label", "買い切り版のご案内");
+    box.setAttribute("aria-live", "polite");
+    document.body.appendChild(box);
+    var p = document.createElement("p");
+    p.textContent = trigger === "limit"
+      ? "この先は買い切り版の機能です。パソコン用の買い切り版(¥100・税込)なら:"
+      : "うまくできましたか? パソコン用の買い切り版(¥100・税込)なら、さらに:";
+    var ul = document.createElement("ul");
+    list.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    var a = document.createElement("a");
+    a.className = "upsell-go";
+    a.id = "upsellToastLink";
+    a.href = buy.href;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "BOOTHで見る(新しいタブ)";
+    var bg = getComputedStyle(buy).backgroundColor;
+    if (bg && !/rgba?\(0, 0, 0, 0\)|transparent/.test(bg)) a.style.background = bg;
+    var x = document.createElement("button");
+    x.type = "button";
+    x.className = "upsell-x";
+    x.setAttribute("aria-label", "この案内を閉じる");
+    x.textContent = "×";
+    function close(remember) {
+      if (box.parentNode) box.parentNode.removeChild(box);
+      document.removeEventListener("keydown", onKey);
+      if (remember) store(KEY_CLOSED, String(Date.now() + 7 * 864e5));
+    }
+    // Escはページ側の操作(選択解除など)にも使われるので、案内の中にフォーカスがある時だけ閉じる
+    function onKey(e) { if (e.key === "Escape" && box.contains(document.activeElement)) close(true); }
+    x.addEventListener("click", function () { close(true); });
+    a.addEventListener("click", function () { setTimeout(function () { close(false); }, 0); });
+    document.addEventListener("keydown", onKey);
+    setTimeout(function () {
+      var note = document.createElement("small");
+      note.className = "upsell-note";
+      note.textContent = "スマホではファイルを開けない機種があります";
+      box.appendChild(x); box.appendChild(p); box.appendChild(ul); box.appendChild(a); box.appendChild(note);
+    }, 50);
+    gtagEv("upsell_show", { trigger: trigger });
+  }
+
+  // 保存・コピー・印刷・書き出しを押した直後(結果を受け取れたタイミング)
+  var OK = /保存|コピー|印刷|書き出|ダウンロード|共有|PDF/;
+  var NG = /読み込|リセット|消|削除|このブラウザに保存|確認|イメージを見る|戻/;
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, a[download], input[type=button], input[type=submit]") : null;
+    if (!el || el.closest("#pro-section, .upsell-toast, #anshin")) return;
+    var label = (el.textContent || el.value || "").replace(/\s+/g, " ");
+    if (!OK.test(label) || NG.test(label)) return;
+    setTimeout(function () { show("action"); }, 1500);
+  }, true);
+
+  // 無料版の上限まわり
+  // (1) ページが出す「買い切り版」の一文に、購入欄へのリンクを足す(スマホでも)。🔒のタブは薄く表示されているので入れない
+  // (2) 案内(パソコンのみ)は、はっきりした合図のときだけ出す: 🔒のクリック・買い切り版にふれたalert・
+  //     初めて出た「〜まで/のみ/以降/入っていません」の上限の一文(計算のたびに出る誘導文や、同じ文の描き直しでは出さない)
+  var SKIP = "#pro-section, .upsell-toast, .upsell-top, #anshin, a, button, label, select, option, h1, h2, h3, .badge, header, footer, nav, textarea, pre, code, [contenteditable], svg";
+  var LIMIT = /まで|のみ|以降|入っていません/;
+  var seenText = {}, ready = false;
+  function goPro(e) {
+    if (e) e.preventDefault();
+    pro.setAttribute("tabindex", "-1");
+    pro.scrollIntoView({ behavior: "smooth", block: "start" });
+    pro.focus({ preventScroll: true });
+  }
+  function linkify(root, deep) {
+    var limitHit = false;
+    var els = root.matches("p, div, span, li") ? [root] : [];
+    if (deep) els = els.concat([].slice.call(root.querySelectorAll("p, div, span, li")));
+    els.forEach(function (el) {
+      if (el.closest(SKIP) || el.closest('[role="radio"], [role="option"], [role="tab"], [role="button"], [tabindex]:not([tabindex="-1"])') || el.querySelector("a, button, p, div, li, input, label")) return;
+      // 選択肢の「○○(買い切り版)」ではなく、文として買い切り版にふれている要素だけ
+      var own = "";
+      for (var n = el.firstChild; n; n = n.nodeType === 1 && n.className === "upsell-inline" ? null : n.nextSibling) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (own.indexOf("買い切り版") < 0 || /[((]買い切り版[))]$/.test(own) || /^🔒/.test(own)) return;
+      var key = own.replace(/\d+/g, "#");
+      if (ready && !seenText[key] && LIMIT.test(own) && !el.closest(".teaser, #teaser, [id$=teaser], #tz")) limitHit = true;
+      seenText[key] = 1;
+      if (el.querySelector(".upsell-inline")) return;
+      var a = document.createElement("a");
+      a.className = "upsell-inline";
+      a.href = "#pro-section";
+      a.setAttribute("aria-label", "くわしく:買い切り版の説明へ移動");
+      a.textContent = "くわしく";
+      var ar = document.createElement("span");
+      ar.setAttribute("aria-hidden", "true");
+      ar.textContent = " ↓";
+      a.appendChild(ar);
+      a.addEventListener("click", goPro);
+      el.appendChild(document.createTextNode(" "));
+      el.appendChild(a);
+    });
+    return limitHit;
+  }
+  linkify(document.body, true);
+  setTimeout(function () { ready = true; }, 1500);
+  var topLink = document.querySelector("#upsellTop a");
+  if (topLink) topLink.addEventListener("click", goPro);
+  new MutationObserver(function (ms) {
+    // 変わったところだけを調べる(足された要素はその中も、文字の変更は親要素だけ)
+    var hit = false, done = new Set();
+    function check(t, deep) {
+      if (!t || t.nodeType !== 1 || done.has(t) || t.closest(".upsell-toast")) return;
+      done.add(t);
+      if (linkify(t, deep)) hit = true;
+    }
+    ms.forEach(function (m) {
+      if (m.type === "characterData") { check(m.target.parentNode, false); return; }
+      check(m.target, false);
+      for (var i = 0; i < m.addedNodes.length; i++) if (m.addedNodes[i].nodeType === 1) check(m.addedNodes[i], true);
+    });
+    if (hit) setTimeout(function () { show("limit"); }, 800);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("button, div, span, li") : null;
+    var first = el && el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild.nodeValue : "";
+    if (!/^\s*🔒/.test(first) || e.target.closest("#pro-section")) return;
+    if (pc) setTimeout(function () { show("limit"); }, 300); else goPro();
+  }, true);
+  var origAlert = window.alert;
+  window.alert = function (msg) {
+    var r = origAlert.apply(window, arguments);
+    if (/買い切り版/.test(String(msg))) setTimeout(function () { show("limit"); }, 300);
+    return r;
+  };
+})();
+</script>
+<!--UPSELL_JS_END-->
+</body>
+</html>
